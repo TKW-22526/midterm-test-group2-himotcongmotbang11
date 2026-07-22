@@ -1,62 +1,101 @@
-const Products=[
+const danhSachSanPham = [
+    {
+        maSP: "SP001",
+        tenSP: "iPhone 15 Pro",
+        giaSP: 30000000,
+        moTa: "Điện thoại cao cấp Apple",
+        mauSac: [
+            { maMau: "BLACK", tenMau: "Titan Đen", hinhAnh: "iphone-17.jpg" },
+            { maMau: "BLUE", tenMau: "Titan Xanh", hinhAnh: "iphone-17.jpg" }
+        ]
+    },
+    {
+        maSP: "SP002",
+        tenSP: "Samsung Galaxy S24",
+        giaSP: 22000000,
+        moTa: "Điện thoại thông minh tích hợp AI từ Samsung",
+        mauSac: [
+            { maMau: "BLACK", tenMau: "Đen Onyx", hinhAnh: "iphone-17.jpg" },
+            { maMau: "BLUE", tenMau: "Xanh Sapphire", hinhAnh: "iphone-17.jpg" }
+        ]
+    },
+    {
+        maSP: "SP003",
+        tenSP: "Xiaomi 14",
+        giaSP: 18000000,
+        moTa: "Flagship cấu hình mạnh mẽ, camera Leica chất lượng cao",
+        mauSac: [
+            { maMau: "BLACK", tenMau: "Đen Huyền Bí", hinhAnh: "iphone-17.jpg" }
+        ]
+    },
+    {
+        maSP: "SP004",
+        tenSP: "Oppo Reno11",
+        giaSP: 10000000,
+        moTa: "Chuyên gia chân dung với thiết kế mỏng nhẹ, bắt mắt",
+        mauSac: [
+            { maMau: "BLACK", tenMau: "Đen Khói", hinhAnh: "iphone-17.jpg" }
+        ]
+    },
+    {
+        maSP: "SP005",
+        tenSP: "Vivo V30",
+        giaSP: 11500000,
+        moTa: "Điện thoại chụp ảnh chân dung ánh sáng vòng hào quang",
+        mauSac: [
+            { maMau: "BLACK", tenMau: "Đen Tinh Tú", hinhAnh: "iphone-17.jpg" }
+        ]
+    }
+];
 
-
-{
-    masp :"SP001",
-    tensp:"iphone 15 Pro",
-    giasp:"3000000",
-    mota:"điện thoại cao cấp của apple",
-    mausac:[
-        {mamau:"black",tenmau:"đen"},
-        {mamau:"bule",tenmau:"xanh biển"}
-    ]
-},
-{
- masp :"SP001",
-    tensp:"iphone 15 Pro",
-    giasp:"3000000",
-    mota:"điện thoại cao cấp của apple",
-    mausac:[
-        {mamau:"black",tenmau:"đen"},
-        {mamau:"bule",tenmau:"xanh biển"}
-    ]
-}
-]
-functioncreateltem(obj)
+document.getElementById("btnSearch").addEventListener("click", function() {
+    let keyword = document.getElementById("txtKeyword").value.trim().toLowerCase();
+    let container = document.getElementById("resultContainer");
     
-    const litsProducts=document.getElementById("Productlist");
-    const item =document.createElement("div");
+    let foundProduct = danhSachSanPham.find(sp => sp.tenSP.toLowerCase().includes(keyword));
 
-    
-    const containerlmage =document.createElement("div");
-    containerlmage.setAttribute("class","image");
-    const img= document.createElement("img");
-    img.setAttribute("src","../images/iphone-17.jpg");
+    if (!foundProduct) {
+        container.innerHTML = `
+            <div class="col-md-6">
+                <div class="alert alert-danger text-center shadow-sm" role="alert">
+                    Không tìm thấy sản phẩm phù hợp.
+                </div>
+            </div>
+        `;
+        return;
+    }
 
-    containerlmage.appendChild(img);
-    const containerLfo =document.createElement("div")
-    containerLfo.setAttribute("class","Lfo card-body");
+    let defaultColor = foundProduct.mauSac[0];
 
-      const masp =document.createElement("p")
-      masp.innerHTML=obj.masp;
-       const tensp =document.createElement("p")
-      masp.innerHTML=obj.tensp;
-       const giasp =document.createElement("p")
-      masp.innerHTML=obj.giasp; 
-      const mota =document.createElement("p")
-      masp.innerHTML=obj.mota;
-       const mausac =document.createElement("p")
-      masp.innerHTML=obj.mausac;
+    let colorOptionsHtml = "";
+    foundProduct.mauSac.forEach((mau, index) => {
+        let selected = index === 0 ? "selected" : "";
+        colorOptionsHtml += `<option value="${mau.hinhAnh}" ${selected}>${mau.tenMau}</option>`;
+    });
 
-      containerLfo.appendChild(masp);
-       containerLfo.appendChild(tensp); 
-       containerLfo.appendChild(mota);
-        containerLfo.appendChild(mausac);
-        item.appendChild(containerLfo);
-        litsProducts.appendChild(item);
-        function loadAllProducts(objAray){
+    container.innerHTML = `
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <img id="productImage" src="images/${defaultColor.hinhAnh}" class="card-img-top img-fluid p-3" alt="${foundProduct.tenSP}" style="height: 280px; object-fit: contain;">
+                <div class="card-body">
+                    <h4 class="card-title fw-bold text-dark">${foundProduct.tenSP}</h4>
+                    <p class="card-text text-muted mb-1"><strong>Mã sản phẩm:</strong> ${foundProduct.maSP}</p>
+                    <p class="card-text text-danger fw-bold mb-2">Giá: ${foundProduct.giaSP.toLocaleString('vi-VN')} VNĐ</p>
+                    <p class="card-text mb-3">${foundProduct.moTa}</p>
+                    
+                    <div class="mb-3">
+                        <label for="selectColor" class="form-label fw-semibold">Chọn màu sắc:</label>
+                        <select id="selectColor" class="form-select">
+                            ${colorOptionsHtml}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 
-            for (let i=0;i<oblArray.lenght;i++){
-                createItem(objArray[i]);
-            }
-        }
+    document.getElementById("selectColor").addEventListener("change", function() {
+        let selectedImage = this.value;
+        document.getElementById("productImage").src = "images/" + selectedImage;
+    });
+});
